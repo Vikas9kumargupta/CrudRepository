@@ -2,13 +2,12 @@ package com.vikasLearning.springboot.controller;
 
 
 import com.vikasLearning.springboot.dto.UserDto;
-import com.vikasLearning.springboot.entity.User;
 import com.vikasLearning.springboot.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -20,7 +19,7 @@ public class UserController {
 
     //Build create User REST API
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto user){
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto user){
        UserDto  savedUser =  userService.createUser(user);
        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
@@ -41,7 +40,7 @@ public class UserController {
 
     //Build Update User Rest Api
     @PutMapping("{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long userId, @RequestBody UserDto user){
+    public ResponseEntity<UserDto> updateUser(@Valid @PathVariable("id") Long userId,@Valid @RequestBody UserDto user){
         user.setId(userId);
         UserDto updatedUser = userService.updateUser(user);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
@@ -52,4 +51,19 @@ public class UserController {
         userService.deleteUser(userId);
         return new ResponseEntity<>("User successfully deleted", HttpStatus.OK);
     }
+
+    //to handle specific exception related to this Controller Class
+
+//    @ExceptionHandler(ResourceNotFoundException.class)
+//    public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException exception,
+//                                                              WebRequest webRequest){
+//        ErrorDetails errorDetails = new ErrorDetails(
+//                LocalDateTime.now(),
+//                exception.getMessage(),
+//                webRequest.getDescription(false),
+//                "USER_NOT FOUND"
+//        );
+//
+//        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+//    }
 }
